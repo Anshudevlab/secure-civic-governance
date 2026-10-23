@@ -1,0 +1,11 @@
+
+.env
+.env.*
+!.env.example
+database.db
+password_hash.txt
+start_project.bat
+__pycache__/
+*.py[cod]
+.venv/
+venv/

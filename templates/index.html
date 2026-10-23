@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Secure Civic Governance | Citizen Portal</title>
+
+    <meta name="description"
+          content="Submit and track civic grievances through a secure and transparent citizen portal.">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="container">
+        <h1>Secure Civic Governance</h1>
+        <p>Transparent, secure and accessible civic services</p>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- Welcome section -->
+    <section class="hero">
+        <h2>Your Voice Matters</h2>
+
+        <p>
+            Report civic issues, receive a unique reference number,
+            and track the progress of your grievance online.
+            Our goal is to support transparent communication between
+            citizens and civic authorities.
+        </p>
+
+        <a href="#submitGrievance" class="btn">
+            Submit a Grievance
+        </a>
+    </section>
+
+    <!-- Main citizen portal -->
+    <section class="portal-grid">
+
+        <!-- Submit grievance -->
+        <div class="card" id="submitGrievance">
+            <h2>Submit a Grievance</h2>
+
+            <p class="muted">
+                Enter the details of the civic issue you want to report.
+            </p>
+
+            <div
+                id="formMessage"
+                class="info-message"
+                role="status"
+                aria-live="polite"
+                hidden
+            ></div>
+
+            <form id="grievanceForm">
+
+                <div class="form-group">
+                    <label for="citizenName">Citizen Name</label>
+
+                    <input
+                        type="text"
+                        id="citizenName"
+                        name="citizenName"
+                        placeholder="Enter your full name"
+                        maxlength="80"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Grievance Category</label>
+
+                    <select id="category" name="category" required>
+                        <option value="">Select a category</option>
+                        <option value="Roads and Transport">
+                            Roads and Transport
+                        </option>
+                        <option value="Water Supply">
+                            Water Supply
+                        </option>
+                        <option value="Electricity">
+                            Electricity
+                        </option>
+                        <option value="Waste Management">
+                            Waste Management
+                        </option>
+                        <option value="Public Safety">
+                            Public Safety
+                        </option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        placeholder="Enter area, town or locality"
+                        maxlength="150"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Grievance Description</label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        placeholder="Describe the civic issue clearly..."
+                        maxlength="2000"
+                        required
+                    ></textarea>
+                </div>
+
+                <button type="submit">
+                    Submit Grievance
+                </button>
+
+            </form>
+        </div>
+
+        <!-- Track grievance -->
+        <div class="card" id="trackGrievance">
+            <h2>Track Your Grievance</h2>
+
+            <p class="muted">
+                Enter the reference number you received after submission.
+            </p>
+
+            <div
+                id="trackingMessage"
+                class="info-message"
+                role="status"
+                aria-live="polite"
+                hidden
+            ></div>
+
+            <form id="trackingForm">
+
+                <div class="form-group">
+                    <label for="referenceNumber">
+                        Grievance Reference Number
+                    </label>
+
+                    <input
+                        type="text"
+                        id="referenceNumber"
+                        name="referenceNumber"
+                        placeholder="Enter your reference number"
+                        maxlength="50"
+                        autocomplete="off"
+                        required
+                    >
+                </div>
+
+                <button type="submit">
+                    Track Grievance
+                </button>
+
+            </form>
+
+            <!-- Tracking results -->
+            <section
+                id="trackingResult"
+                class="tracking-result"
+                aria-live="polite"
+                hidden
+            >
+                <h3>Grievance Details</h3>
+
+                <p>
+                    <strong>Reference Number:</strong>
+                    <span id="resultReference">—</span>
+                </p>
+
+                <p>
+                    <strong>Category:</strong>
+                    <span id="resultCategory">—</span>
+                </p>
+
+                <p>
+                    <strong>Location:</strong>
+                    <span id="resultLocation">—</span>
+                </p>
+
+                <p>
+                    <strong>Current Status:</strong>
+                    <span id="resultStatus" class="status-badge">—</span>
+                </p>
+            </section>
+        </div>
+
+    </section>
+
+    <!-- Project features -->
+    <section class="dashboard-section">
+        <h2>Our Commitment</h2>
+
+        <div class="feature-grid">
+
+            <div class="feature-card">
+                <h3>Secure Reporting</h3>
+                <p>
+                    Submit civic grievances through a structured online form.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Transparent Tracking</h3>
+                <p>
+                    Use a reference number to check the latest recorded status.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Efficient Management</h3>
+                <p>
+                    Help administrators organize and update civic complaints.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <p class="back-link">
+        <a href="{{ url_for('admin_login') }}">Administrator Sign In</a>
+    </p>
+
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>
+            &copy; 2026 Secure Civic Governance.
+            Building transparent and accessible civic services.
+        </p>
+    </div>
+</footer>
+
+<script src="{{ url_for('static', filename='script.js') }}" defer></script>
+
+</body>
+</html>

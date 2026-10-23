@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | Secure Civic Governance</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="container">
+        <div>
+            <h1>Secure Civic Governance</h1>
+            <p>Administration Dashboard</p>
+        </div>
+
+        <div class="header-actions">
+            <a href="{{ url_for('export_grievances') }}" class="btn">
+                Export CSV
+            </a>
+
+            <form method="POST" action="{{ url_for('admin_logout') }}">
+                <input type="hidden"
+                       name="csrf_token"
+                       value="{{ csrf_token() }}">
+
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<main class="container dashboard-container">
+
+    <section class="dashboard-heading">
+        <h2>Grievance Management</h2>
+        <p>Monitor citizen complaints and manage their progress.</p>
+    </section>
+
+    <!-- Dashboard statistics -->
+    <section class="stats-grid">
+
+        <div class="stat-card">
+            <h3>Total Grievances</h3>
+            <p>{{ total }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Submitted</h3>
+            <p>{{ submitted }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>In Progress</h3>
+            <p>{{ in_progress }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Resolved</h3>
+            <p>{{ resolved }}</p>
+        </div>
+
+    </section>
+
+    <!-- Category summary -->
+    <section class="dashboard-section">
+        <h2>Grievances by Category</h2>
+
+        {% if category_counts %}
+            <div class="category-list">
+                {% for category, count in category_counts.items() %}
+                    <div class="category-item">
+                        <span>{{ category }}</span>
+                        <strong>{{ count }}</strong>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No grievances have been submitted yet.</p>
+        {% endif %}
+    </section>
+
+    <!-- Grievance management table -->
+    <section class="dashboard-section">
+
+        <h2>All Grievances</h2>
+
+        <div class="table-controls">
+            <input
+                type="search"
+                id="searchInput"
+                placeholder="Search grievances..."
+                aria-label="Search grievances"
+            >
+
+            <select id="statusFilter" aria-label="Filter by status">
+                <option value="all">All Statuses</option>
+                <option value="submitted">Submitted</option>
+                <option value="in progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+            </select>
+        </div>
+
+        <div class="table-responsive">
+            <table class="grievance-table">
+
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Citizen Name</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="grievanceTableBody">
+
+                    {% for grievance in grievances %}
+                    <tr class="grievance-row">
+
+                        <td class="reference-cell">
+                            {{ grievance['reference'] }}
+                        </td>
+
+                        <td>
+                            {{ grievance['citizen_name'] }}
+                        </td>
+
+                        <td>
+                            {{ grievance['category'] }}
+                        </td>
+
+                        <td>
+                            {{ grievance['location'] }}
+                        </td>
+
+                        <td class="description-cell">
+                            {{ grievance['description'] }}
+                        </td>
+
+                        <td>
+                            {{ grievance['created_at'] or '—' }}
+                        </td>
+
+                        <td>
+                            <span class="status-badge">
+                                {{ grievance['status'] }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <form
+                                method="POST"
+                                action="{{ url_for('update_status') }}"
+                                class="status-update-form"
+                            >
+
+                                <input
+                                    type="hidden"
+                                    name="csrf_token"
+                                    value="{{ csrf_token() }}"
+                                >
+
+                                <input
+                                    type="hidden"
+                                    name="reference"
+                                    value="{{ grievance['reference'] }}"
+                                >
+
+                                <select name="status" required>
+                                    <option
+                                        value="Submitted"
+                                        {% if grievance['status'] == 'Submitted' %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Submitted
+                                    </option>
+
+                                    <option
+                                        value="In Progress"
+                                        {% if grievance['status'] == 'In Progress' %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        In Progress
+                                    </option>
+
+                                    <option
+                                        value="Resolved"
+                                        {% if grievance['status'] == 'Resolved' %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Resolved
+                                    </option>
+                                </select>
+
+                                <button type="submit">
+                                    Update
+                                </button>
+
+                            </form>
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td colspan="8">
+                            No grievances found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </section>
+
+    <p class="back-link">
+        <a href="{{ url_for('index') }}">
+            Back to Citizen Portal
+        </a>
+    </p>
+
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>
+            &copy; 2026 Secure Civic Governance.
+            Transparent and reliable civic services.
+        </p>
+    </div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+
+    const rows = document.querySelectorAll(
+        "#grievanceTableBody .grievance-row"
+    );
+
+    function filterGrievances() {
+        const searchText = searchInput.value.toLowerCase().trim();
+        const selectedStatus = statusFilter.value.toLowerCase();
+
+        rows.forEach(function (row) {
+            const rowText = row.innerText.toLowerCase();
+            const rowStatus = row.cells[6].innerText
+                .toLowerCase().trim();
+
+            const matchesSearch = rowText.includes(searchText);
+
+            const matchesStatus =
+                selectedStatus === "all" ||
+                rowStatus === selectedStatus;
+
+            row.hidden = !(matchesSearch && matchesStatus);
+        });
+    }
+
+    searchInput.addEventListener("input", filterGrievances);
+    statusFilter.addEventListener("change", filterGrievances);
+});
+</script>
+
+</body>
+</html>

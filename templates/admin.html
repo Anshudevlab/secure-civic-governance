@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Secure Civic Governance</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container">
+            <h1>Secure Civic Governance</h1>
+            <p>Administration Portal</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="form-container">
+            <h2>Admin Sign In</h2>
+
+            <p class="subtitle">
+                Sign in to manage citizen grievances and update their status.
+            </p>
+
+            {% if error %}
+                <div class="error-message" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form
+                id="adminLoginForm"
+                method="POST"
+                action="{{ url_for('admin_login') }}"
+            >
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter admin username"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter admin password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" id="signInButton">
+                    Sign In
+                </button>
+
+            </form>
+
+            <p class="back-link">
+                <a href="{{ url_for('index') }}">
+                    Back to Citizen Portal
+                </a>
+            </p>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>
+                &copy; 2026 Secure Civic Governance.
+                Secure and transparent civic services.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
